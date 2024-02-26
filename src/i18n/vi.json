@@ -1,0 +1,22 @@
+{
+    "error": "Có lỗi",
+    "warning": "Cảnh báo",
+    "apiConnectionError": "Không thể kết nối tới máy chủ, vui lòng kiểm tra mạng internet của bạn!",
+    "notAuthenticated": "Bạn chưa đăng nhập, hãy thử đăng nhập lại!",
+    "notAuthorized": "Bạn không có quyền để thực hiện hành động này, vui lòng liên hệ với quản trị viên!",
+    "invalidInput": "Dữ liệu nhập không đúng định dạng!",
+    "signinLabel": "Đăng nhập để bắt đầu",
+    "signin": "Đăng nhập",
+    "forgotMyPassword": "Tôi quên mật khẩu",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "dashboard": "Tổng quan",
+    "reports": "Báo cáo",
+    "devices": "Thiết bị",
+    "powerBankStation": "Trạm sạc pin dự phòng",
+    "users": "Người dùng",
+    "administrators": "Admin",
+    "updateProfile": "Sửa thông tin cá nhân",
+    "changePassword": "Đổi mật khẩu",
+    "logout": "Thoát"
+}

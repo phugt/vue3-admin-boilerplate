@@ -1,0 +1,22 @@
+{
+    "error": "Error",
+    "warning": "Warning",
+    "apiConnectionError": "Cannot connect to server, please check your internet connection!",
+    "notAuthenticated": "You are not logged in, please try to login again!",
+    "notAuthorized": "You don't have permission to perform this action, please contact administrator!",
+    "invalidInput": "Invalid input data!",
+    "signinLabel": "Sign in to start your session",
+    "signin": "Sign in",
+    "forgotMyPassword": "I forgot my password",
+    "email": "Email",
+    "password": "Password",
+    "dashboard": "Dashboard",
+    "reports": "Reports",
+    "devices": "Devices",
+    "powerBankStation": "Power bank station",
+    "users": "Users",
+    "administrators": "Administrators",
+    "updateProfile": "Update my profile",
+    "changePassword": "Change my password",
+    "logout": "Logout"
+}
