@@ -43,7 +43,9 @@ const setValue = (v: any) => {
         <li v-if="pageCount - value > 1" class="page-item">
             <a class="page-link cursor-pointer" @click="setValue(value + 2)">{{ value + 2 }}</a>
         </li>
-        <li v-if="pageCount - value > 0" class="page-item"><a class="page-link cursor-pointer">»</a></li>
-        <li v-if="pageCount - value > 1" class="page-item"><a class="page-link cursor-pointer">»»</a></li>
+        <li v-if="pageCount - value > 0" class="page-item" @click="setValue(value + 1)"><a
+                class="page-link cursor-pointer">»</a></li>
+        <li v-if="pageCount - value > 1" class="page-item" @click="setValue(props.pageCount)"><a
+                class="page-link cursor-pointer">»»</a></li>
     </ul>
 </template>

@@ -18,5 +18,7 @@
     "administrators": "Administrators",
     "updateProfile": "Update my profile",
     "changePassword": "Change my password",
-    "logout": "Logout"
+    "logout": "Logout",
+    "edit": "Edit",
+    "delete": "Delete"
 }

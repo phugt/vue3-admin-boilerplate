@@ -5,19 +5,20 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'dashboard',
       component: () => import('@/views/Dashboard.vue')
     },
     {
       path: '/login',
-      name: 'login',
       component: () => import('@/views/Login.vue'),
       meta: { layout: "Auth" }
     },
     {
       path: '/users',
-      name: 'users',
       component: () => import('@/views/User.vue')
+    },
+    {
+      path: '/admins',
+      component: () => import('@/views/Admin.vue')
     },
   ]
 })

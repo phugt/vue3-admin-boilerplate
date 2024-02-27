@@ -18,5 +18,7 @@
     "administrators": "Admin",
     "updateProfile": "Sửa thông tin cá nhân",
     "changePassword": "Đổi mật khẩu",
-    "logout": "Thoát"
+    "logout": "Thoát",
+    "edit": "Sửa",
+    "delete": "Xóa"
 }

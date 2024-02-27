@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n';
 const { api } = useAxios()
 const { t } = useI18n()
 
-const defaultFilter = { keyword: "", page: 1, page_size: 50 }
+const defaultFilter = { keyword: "", page: 1, pageSize: 50 }
 const filter = reactive({ ...defaultFilter })
 const listLoading = ref(false)
 const loading = ref(false)
@@ -18,8 +18,7 @@ const pageCount = ref(0)
 
 function load() {
     listLoading.value = true
-    console.log(filter)
-    api.get('/user', { params: filter }).then(resp => {
+    api.get('/admin', { data: filter }).then(resp => {
         items.value = resp.data.items
         itemCount.value = resp.data.itemCount
         pageCount.value = resp.data.pageCount
@@ -28,12 +27,12 @@ function load() {
     })
 }
 
-function search() {
-    filter.page = 1
+function page() {
+    filter.page++
     load()
 }
 
-const defaultForm = { id: null, email: "", password: "", full_name: "", address: "", desc: "" }
+const defaultForm = { id: null, email: "", roles: "" }
 const form = reactive({ ...defaultForm })
 const formErrors = ref<any>({})
 
@@ -47,7 +46,7 @@ function create() {
 
 function update(id: any) {
     loading.value = true
-    api.get(`/user/${id}`).then(resp => {
+    api.get(`/admin/${id}`).then(resp => {
         Object.assign(form, resp.data)
         modal.modal()
     }).finally(() => {
@@ -85,7 +84,7 @@ function remove(id: any) {
 function submit() {
     loading.value = true
     api({
-        url: `/user`,
+        url: `/admin`,
         method: form.id ? 'put' : 'post',
         data: filter
     }).then((resp) => {
@@ -123,7 +122,7 @@ onMounted(() => {
                     <div class="col-sm-6 align-middle">
                         <div class="float-right">
                             <button class="btn btn-sm btn-success" @click="create()">
-                                <i class="fas fa-plus"></i>&nbsp;{{ $t('newUser') }}
+                                <i class="fas fa-plus"></i>&nbsp;{{ $t('newAdmin') }}
                             </button>
                         </div>
                     </div>
@@ -135,13 +134,6 @@ onMounted(() => {
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <form @submit.prevent="load()" class="form-inline">
-                                <div class="form-group my-2">
-                                    <input v-model="filter.keyword" class="form-control"
-                                        :placeholder="$t('keywordPlaceholder')">
-                                </div>
-                                <button type="submit" class="btn btn-primary mx-2 my-2">{{ $t('search') }}</button>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -155,7 +147,7 @@ onMounted(() => {
                                     <tr>
                                         <th>{{ $t('email') }}</th>
                                         <th>{{ $t('full_name') }}</th>
-                                        <th>{{ $t('address') }}</th>
+                                        <th>{{ $t('roles') }}</th>
                                         <th>&nbsp;</th>
                                     </tr>
                                 </thead>
@@ -180,7 +172,7 @@ onMounted(() => {
                         </div>
                         <div class="card-footer clearfix">
                             <Pagination class="float-right" v-model="filter.page" :item-count="itemCount"
-                                :page-count="pageCount" @update:model-value="load()" />
+                                :page-count="pageCount" @update="page" />
                         </div>
                     </div>
                 </div>
@@ -205,28 +197,10 @@ onMounted(() => {
                             <div class="invalid-feedback">{{ formErrors['email'] }}</div>
                         </div>
                         <div class="form-group">
-                            <label>{{ $t('password') }}</label>
-                            <input type="password" v-model.trim="form.password" class="form-control"
-                                :placeholder="$t('password')" :class="formErrors['password'] ? 'is-invalid' : ''">
-                            <div class="invalid-feedback">{{ formErrors['password'] }}</div>
-                        </div>
-                        <div class="form-group">
                             <label>{{ $t('fullName') }}</label>
-                            <input v-model.trim="form.full_name" class="form-control" :placeholder="$t('fullName')"
-                                :class="formErrors['full_name'] ? 'is-invalid' : ''">
-                            <div class="invalid-feedback">{{ formErrors['full_name'] }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label>{{ $t('address') }}</label>
-                            <input v-model.trim="form.address" class="form-control" :placeholder="$t('address')"
-                                :class="formErrors['address'] ? 'is-invalid' : ''">
-                            <div class="invalid-feedback">{{ formErrors['address'] }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label>{{ $t('userDesc') }}</label>
-                            <textarea v-model.trim="form.desc" class="form-control" :placeholder="$t('userDesc')"
-                                :class="formErrors['desc'] ? 'is-invalid' : ''"></textarea>
-                            <div class="invalid-feedback">{{ formErrors['desc'] }}</div>
+                            <input v-model.trim="form.roles" class="form-control" :placeholder="$t('roles')"
+                                :class="formErrors['roles'] ? 'is-invalid' : ''">
+                            <div class="invalid-feedback">{{ formErrors['roles'] }}</div>
                         </div>
                     </form>
                 </div>
