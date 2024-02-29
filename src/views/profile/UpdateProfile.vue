@@ -84,8 +84,8 @@ function submit() {
                             <div class="invalid-feedback">{{ formErrors['address'] }}</div>
                         </div>
                         <div class="form-group">
-                            <label>{{ $t('userDesc') }}</label>
-                            <textarea v-model.trim="form.desc" class="form-control" :placeholder="$t('userDesc')"
+                            <label>{{ $t('desc') }}</label>
+                            <textarea v-model.trim="form.desc" class="form-control"
                                 :class="formErrors['desc'] ? 'is-invalid' : ''"></textarea>
                             <div class="invalid-feedback">{{ formErrors['desc'] }}</div>
                         </div>

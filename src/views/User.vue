@@ -5,10 +5,11 @@ import { ref, reactive, onMounted } from 'vue'
 import Pagination from '@/components/Pagination.vue'
 import swal from '@/swal';
 import { useI18n } from 'vue-i18n';
+import TabBar from '@/components/TabBar.vue';
 const { api } = useAxios()
 const { t } = useI18n()
 
-const defaultFilter = { keyword: "", page: 1, page_size: 50 }
+const defaultFilter = { status: "all", keyword: "", page: 1, page_size: 50 }
 const filter = reactive({ ...defaultFilter })
 const listLoading = ref(false)
 const loading = ref(false)
@@ -18,7 +19,6 @@ const pageCount = ref(0)
 
 function load() {
     listLoading.value = true
-    console.log(filter)
     api.get('/user', { params: filter }).then(resp => {
         items.value = resp.data.items
         itemCount.value = resp.data.itemCount
@@ -87,7 +87,7 @@ function submit() {
     api({
         url: `/user`,
         method: form.id ? 'put' : 'post',
-        data: filter
+        data: form
     }).then((resp) => {
         modal.modal('hide')
         swal.fire({
@@ -133,12 +133,14 @@ onMounted(() => {
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
+                    <TabBar v-model="filter.status" @update:model-value="search"
+                        :tabs="[{ label: $t('all'), value: 'all' }, { label: $t('deleted'), value: 'deleted' }]" />
                     <div class="card">
                         <div class="card-body">
                             <form @submit.prevent="load()" class="form-inline">
                                 <div class="form-group my-2">
                                     <input v-model="filter.keyword" class="form-control"
-                                        :placeholder="$t('keywordPlaceholder')">
+                                        :placeholder="$t('searchPlaceholder')">
                                 </div>
                                 <button type="submit" class="btn btn-primary mx-2 my-2">{{ $t('search') }}</button>
                             </form>
@@ -154,7 +156,7 @@ onMounted(() => {
                                 <thead>
                                     <tr>
                                         <th>{{ $t('email') }}</th>
-                                        <th>{{ $t('full_name') }}</th>
+                                        <th>{{ $t('fullName') }}</th>
                                         <th>{{ $t('address') }}</th>
                                         <th>&nbsp;</th>
                                     </tr>
@@ -165,13 +167,23 @@ onMounted(() => {
                                         <td>{{ item.full_name }}</td>
                                         <td>{{ item.address }}</td>
                                         <td>
-                                            <div class="btn-group">
+                                            <div class="btn-group" v-if="!item.delete_time">
                                                 <button class="btn btn-xs btn-info" @click="update(item.id)">
                                                     <i class="fa fa-edit"></i>&nbsp;{{ $t('edit') }}
                                                 </button>
                                                 <button class="btn btn-xs btn-danger" @click="remove(item.id)">
                                                     <i class="fa fa-trash-alt"></i>&nbsp;{{ $t('delete') }}
                                                 </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="(!items || items.length == 0)">
+                                        <td colspan="4" class="text-center">
+                                            <div v-if="listLoading" class="spinner-border spinner-border-sm">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                            <div v-else>
+                                                <span class="text-danger">{{ $t('noResult') }}</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -191,7 +203,7 @@ onMounted(() => {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">{{ $t(form.id ? 'newUser' : 'updateUser') }}</h4>
+                    <h4 class="modal-title">{{ $t(form.id ? 'updateUser' : 'newUser') }}</h4>
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -223,8 +235,8 @@ onMounted(() => {
                             <div class="invalid-feedback">{{ formErrors['address'] }}</div>
                         </div>
                         <div class="form-group">
-                            <label>{{ $t('userDesc') }}</label>
-                            <textarea v-model.trim="form.desc" class="form-control" :placeholder="$t('userDesc')"
+                            <label>{{ $t('desc') }}</label>
+                            <textarea v-model.trim="form.desc" class="form-control"
                                 :class="formErrors['desc'] ? 'is-invalid' : ''"></textarea>
                             <div class="invalid-feedback">{{ formErrors['desc'] }}</div>
                         </div>

@@ -39,6 +39,9 @@ export const useAxios = () => {
                     case 403:
                         swal.fire(i18n.t('warning'), i18n.t('notAuthorized'), 'warning')
                         break
+                    case 404:
+                        swal.fire(i18n.t('warning'), i18n.t('notFound'), 'warning')
+                        break
                     case 422:
                         break
                     default:
