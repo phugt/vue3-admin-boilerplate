@@ -9,7 +9,7 @@ import TabBar from '@/components/TabBar.vue';
 const { api } = useAxios()
 const { t } = useI18n()
 
-const defaultFilter = { status: "all", keyword: "", page: 1, page_size: 50 }
+const defaultFilter = { status: "all", keyword: "", page: 1, pageSize: 50 }
 const filter = reactive({ ...defaultFilter })
 const listLoading = ref(false)
 const loading = ref(false)
@@ -33,7 +33,7 @@ function search() {
     load()
 }
 
-const defaultForm = { id: null, email: "", password: "", full_name: "", address: "", desc: "" }
+const defaultForm = { id: null, email: "", password: "", fullName: "", address: "", desc: "" }
 const form = reactive({ ...defaultForm })
 const formErrors = ref<any>({})
 
@@ -72,7 +72,11 @@ function remove(id: any) {
                 swal.fire({
                     title: t('success'),
                     text: t('deleteSuccess'),
-                    icon: "success"
+                    icon: "success",
+                    showConfirmButton: false,
+                    toast: true,
+                    timer: 3000,
+                    position: 'top-end'
                 })
                 load()
             }).finally(() => {
@@ -93,7 +97,11 @@ function submit() {
         swal.fire({
             title: t('success'),
             text: t(form.id ? 'updateSuccess' : 'createSuccess'),
-            icon: "success"
+            icon: "success",
+            showConfirmButton: false,
+            toast: true,
+            timer: 3000,
+            position: 'top-end'
         })
         load()
     }).catch(resp => {
@@ -123,7 +131,7 @@ onMounted(() => {
                     <div class="col-sm-6 align-middle">
                         <div class="float-right">
                             <button class="btn btn-sm btn-success" @click="create()">
-                                <i class="fas fa-plus"></i>&nbsp;{{ $t('newUser') }}
+                                <i class="fas fa-plus"></i>&nbsp;{{ $t('create') }}
                             </button>
                         </div>
                     </div>
@@ -142,7 +150,7 @@ onMounted(() => {
                                     <input v-model="filter.keyword" class="form-control"
                                         :placeholder="$t('searchPlaceholder')">
                                 </div>
-                                <button type="submit" class="btn btn-primary mx-2 my-2">{{ $t('search') }}</button>
+                                <button :disabled="listLoading" type="submit" class="btn btn-primary mx-2 my-2">{{ $t('search') }}</button>
                             </form>
                         </div>
                     </div>
@@ -164,10 +172,10 @@ onMounted(() => {
                                 <tbody>
                                     <tr v-for="item of items">
                                         <td>{{ item.email }}</td>
-                                        <td>{{ item.full_name }}</td>
+                                        <td>{{ item.fullName }}</td>
                                         <td>{{ item.address }}</td>
                                         <td>
-                                            <div class="btn-group" v-if="!item.delete_time">
+                                            <div class="btn-group" v-if="!item.deleteTime">
                                                 <button class="btn btn-xs btn-info" @click="update(item.id)">
                                                     <i class="fa fa-edit"></i>&nbsp;{{ $t('edit') }}
                                                 </button>
@@ -224,9 +232,9 @@ onMounted(() => {
                         </div>
                         <div class="form-group">
                             <label>{{ $t('fullName') }}</label>
-                            <input v-model.trim="form.full_name" class="form-control" :placeholder="$t('fullName')"
-                                :class="formErrors['full_name'] ? 'is-invalid' : ''">
-                            <div class="invalid-feedback">{{ formErrors['full_name'] }}</div>
+                            <input v-model.trim="form.fullName" class="form-control" :placeholder="$t('fullName')"
+                                :class="formErrors['fullName'] ? 'is-invalid' : ''">
+                            <div class="invalid-feedback">{{ formErrors['fullName'] }}</div>
                         </div>
                         <div class="form-group">
                             <label>{{ $t('address') }}</label>

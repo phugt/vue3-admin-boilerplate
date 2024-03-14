@@ -28,7 +28,7 @@ onMounted(() => {
 
 defineExpose({ open, close })
 
-const defaultForm = { email: "", full_name: "", address: "", desc: "" }
+const defaultForm = { email: "", fullName: "", address: "", desc: "" }
 const form = reactive({ ...defaultForm })
 const formErrors = ref<any>({})
 
@@ -73,9 +73,9 @@ function submit() {
                         </div>
                         <div class="form-group">
                             <label>{{ $t('fullName') }}</label>
-                            <input v-model.trim="form.full_name" class="form-control" :placeholder="$t('fullName')"
-                                :class="formErrors['full_name'] ? 'is-invalid' : ''">
-                            <div class="invalid-feedback">{{ formErrors['full_name'] }}</div>
+                            <input v-model.trim="form.fullName" class="form-control" :placeholder="$t('fullName')"
+                                :class="formErrors['fullName'] ? 'is-invalid' : ''">
+                            <div class="invalid-feedback">{{ formErrors['fullName'] }}</div>
                         </div>
                         <div class="form-group">
                             <label>{{ $t('address') }}</label>

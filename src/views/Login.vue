@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useAxios } from '@/axios'
-import LanguageSelector from '@/components/LanguageSelector.vue'
+import LanguageSelect from '@/components/LanguageSelect.vue'
 import { useAuthStore } from '@/stores/auth';
 import router from '@/router';
 const { api } = useAxios()
@@ -17,6 +17,7 @@ function submit() {
     api.post('/login', form).then(resp => {
         formErrors.value = {}
         authStore.login(resp.data.token, resp.data.user)
+        api.defaults.headers.common["Authorization"] = 'Bearer ' + resp.data.token
         router.push('/')
     }).catch(resp => {
         if (resp.status == 422) {
@@ -71,7 +72,7 @@ function submit() {
                 </p>
             </div>
             <div class="card-footer text-center">
-                <LanguageSelector />
+                <LanguageSelect />
             </div>
         </div>
     </div>

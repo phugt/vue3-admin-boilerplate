@@ -5,10 +5,12 @@ import { ref, reactive, onMounted } from 'vue'
 import Pagination from '@/components/Pagination.vue'
 import swal from '@/swal';
 import { useI18n } from 'vue-i18n';
+import TabBar from '@/components/TabBar.vue';
+import UserSelect from '@/components/UserSelect.vue';
 const { api } = useAxios()
 const { t } = useI18n()
 
-const defaultFilter = { keyword: "", page: 1, pageSize: 50 }
+const defaultFilter = { status: "all", keyword: "", page: 1, pageSize: 50 }
 const filter = reactive({ ...defaultFilter })
 const listLoading = ref(false)
 const loading = ref(false)
@@ -18,7 +20,7 @@ const pageCount = ref(0)
 
 function load() {
     listLoading.value = true
-    api.get('/admin', { data: filter }).then(resp => {
+    api.get('/admin', { params: filter }).then(resp => {
         items.value = resp.data.items
         itemCount.value = resp.data.itemCount
         pageCount.value = resp.data.pageCount
@@ -27,12 +29,12 @@ function load() {
     })
 }
 
-function page() {
-    filter.page++
+function search() {
+    filter.page = 1
     load()
 }
 
-const defaultForm = { id: null, email: "", roles: "" }
+const defaultForm = { id: null, userId: "", roles: []}
 const form = reactive({ ...defaultForm })
 const formErrors = ref<any>({})
 
@@ -48,9 +50,9 @@ function update(id: any) {
     loading.value = true
     api.get(`/admin/${id}`).then(resp => {
         Object.assign(form, resp.data)
-        modal.modal()
     }).finally(() => {
         loading.value = false
+        modal.modal()
     })
     Object.assign(form, defaultForm)
     formErrors.value = {}
@@ -67,7 +69,7 @@ function remove(id: any) {
     }).then((result) => {
         if (result.isConfirmed) {
             loading.value = true
-            api.delete(`/user/${id}`).then(resp => {
+            api.delete(`/admin/${id}`).then(resp => {
                 swal.fire({
                     title: t('success'),
                     text: t('deleteSuccess'),
@@ -86,7 +88,7 @@ function submit() {
     api({
         url: `/admin`,
         method: form.id ? 'put' : 'post',
-        data: filter
+        data: form
     }).then((resp) => {
         modal.modal('hide')
         swal.fire({
@@ -117,12 +119,12 @@ onMounted(() => {
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>{{ $t('userList') }}</h1>
+                        <h1>{{ $t('adminList') }}</h1>
                     </div>
                     <div class="col-sm-6 align-middle">
                         <div class="float-right">
                             <button class="btn btn-sm btn-success" @click="create()">
-                                <i class="fas fa-plus"></i>&nbsp;{{ $t('newAdmin') }}
+                                <i class="fas fa-plus"></i>&nbsp;{{ $t('create') }}
                             </button>
                         </div>
                     </div>
@@ -132,8 +134,17 @@ onMounted(() => {
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
+                    <TabBar v-model="filter.status" @update:model-value="search"
+                        :tabs="[{ label: $t('all'), value: 'all' }, { label: $t('deleted'), value: 'deleted' }]" />
                     <div class="card">
                         <div class="card-body">
+                            <form @submit.prevent="load()" class="form-inline">
+                                <div class="form-group my-2">
+                                    <input v-model="filter.keyword" class="form-control"
+                                        :placeholder="$t('searchPlaceholder')">
+                                </div>
+                                <button type="submit" class="btn btn-primary mx-2 my-2">{{ $t('search') }}</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -146,18 +157,18 @@ onMounted(() => {
                                 <thead>
                                     <tr>
                                         <th>{{ $t('email') }}</th>
-                                        <th>{{ $t('full_name') }}</th>
+                                        <th>{{ $t('fullName') }}</th>
                                         <th>{{ $t('roles') }}</th>
                                         <th>&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="item of items">
-                                        <td>{{ item.email }}</td>
-                                        <td>{{ item.full_name }}</td>
-                                        <td>{{ item.address }}</td>
+                                        <td>{{ item.user.email }}</td>
+                                        <td>{{ item.user.fullName }}</td>
+                                        <td>{{ item.roles }}</td>
                                         <td>
-                                            <div class="btn-group">
+                                            <div class="btn-group" v-if="!item.deleteTime">
                                                 <button class="btn btn-xs btn-info" @click="update(item.id)">
                                                     <i class="fa fa-edit"></i>&nbsp;{{ $t('edit') }}
                                                 </button>
@@ -167,12 +178,22 @@ onMounted(() => {
                                             </div>
                                         </td>
                                     </tr>
+                                    <tr v-if="(!items || items.length == 0)">
+                                        <td colspan="4" class="text-center">
+                                            <div v-if="listLoading" class="spinner-border spinner-border-sm">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                            <div v-else>
+                                                <span class="text-danger">{{ $t('noResult') }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="card-footer clearfix">
                             <Pagination class="float-right" v-model="filter.page" :item-count="itemCount"
-                                :page-count="pageCount" @update="page" />
+                                :page-count="pageCount" @update:model-value="load()" />
                         </div>
                     </div>
                 </div>
@@ -183,21 +204,16 @@ onMounted(() => {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">{{ $t(form.id ? 'newUser' : 'updateUser') }}</h4>
+                    <h4 class="modal-title">{{ $t(form.id ? 'updateAdmin' : 'newAdmin') }}</h4>
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form @submit.prevent="submit()">
+                        <UserSelect v-model="form.userId" :readonly="form.id != null" :error="formErrors['userId']"/>
                         <div class="form-group">
-                            <label>{{ $t('email') }}</label>
-                            <input v-model.trim="form.email" :readonly="form.id != null" class="form-control"
-                                :placeholder="$t('email')" :class="formErrors['email'] ? 'is-invalid' : ''">
-                            <div class="invalid-feedback">{{ formErrors['email'] }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label>{{ $t('fullName') }}</label>
+                            <label>{{ $t('roles') }}</label>
                             <input v-model.trim="form.roles" class="form-control" :placeholder="$t('roles')"
                                 :class="formErrors['roles'] ? 'is-invalid' : ''">
                             <div class="invalid-feedback">{{ formErrors['roles'] }}</div>

@@ -41,7 +41,7 @@
     "desc": "Description",
     "newUser": "New user",
     "updateUser": "Update user",
-    "oldPassword": "Old password",
+    "oldPassword": "Current password",
     "newPassword": "New password",
     "rePassword": "Retype new password"
 }

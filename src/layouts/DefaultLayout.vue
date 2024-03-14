@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LanguageSelector from "@/components/LanguageSelector.vue"
+import LanguageSelect from "@/components/LanguageSelect.vue"
 import UpdateProfile from "@/views/profile/UpdateProfile.vue"
 import ChangePassword from "@/views/profile/ChangePassword.vue"
 import { useHead } from "@unhead/vue"
@@ -133,7 +133,7 @@ onUnmounted(() => {
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="userDropdown" role="button" data-toggle="dropdown"
-                        aria-expanded="false"><i class="far fa-user"></i>&nbsp;{{ useAuthStore().user?.full_name }}
+                        aria-expanded="false"><i class="far fa-user"></i>&nbsp;{{ useAuthStore().user?.fullName }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                         <a class="dropdown-item cursor-pointer" @click="openUpdateProfile()">{{ $t('updateProfile')
@@ -195,7 +195,7 @@ onUnmounted(() => {
         <ChangePassword ref="changePassword" />
         <footer class="main-footer">
             <div class="float-right d-none d-sm-block">
-                <LanguageSelector />
+                <LanguageSelect />
             </div>
             <strong>Copyright &copy; 2024 <a target="_blank" href="https://anyshare.pro">AnyShare.pro</a>.</strong>
             &nbsp;All rights reserved.
